@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body{
+        background: #ecedf6;
+    }
+}
+
+@layer components {
+  input,
+  textarea {
+    border: none;
+    resize: none;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    background-color: rgb(0 0 0 / 0.3);
+  }
+}
