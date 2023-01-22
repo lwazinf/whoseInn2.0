@@ -1,5 +1,13 @@
 import { useRecoilState } from "recoil";
 import {
+  Combobox,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxOption,
+  ComboboxPopover,
+} from "@reach/combobox";
+import { Loader } from "@googlemaps/js-api-loader";
+import {
   ThisState,
   AccrState,
   ImageState,
@@ -15,13 +23,20 @@ import {
   faCamera,
   faCheckCircle,
   faCoins,
-  faHeart,
-  faInfoCircle,
   faMapMarkerAlt,
   faPeopleGroup,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { Autocomplete, useLoadScript } from "@react-google-maps/api";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db, useAuth } from "../firebase";
+import { v4 } from "uuid";
 
 interface Create_Props {}
 
@@ -42,8 +57,36 @@ const Create_ = ({}: Create_Props) => {
 
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [option_, setOption_] = useState(0);
+  const [tempStudents_, setStudentsTemp_] = useState("");
+  const [tempPrice_, setPriceTemp_] = useState("");
+
+  const currentUser_ = useAuth()
 
   const mockData_ = [
+    {
+      data: price,
+      optionType: "input",
+      options: [0],
+      name: "Price",
+      hoverData: "Pricing",
+      icon: faCoins,
+    },
+    {
+      data: students,
+      optionType: "input",
+      options: [0],
+      name: "Students",
+      hoverData: "Students",
+      icon: faPeopleGroup,
+    },
+    {
+      data: map,
+      optionType: "map",
+      options: ["Select"],
+      name: "Map",
+      hoverData: "Location",
+      icon: faMapMarkerAlt,
+    },
     {
       data: acc,
       optionType: "select",
@@ -61,36 +104,12 @@ const Create_ = ({}: Create_Props) => {
       icon: faCamera,
     },
     {
-      data: map,
-      optionType: "map",
-      options: ["Select"],
-      name: "Map",
-      hoverData: "Location",
-      icon: faMapMarkerAlt,
-    },
-    {
-      data: students,
-      optionType: "input",
-      options: [0],
-      name: "Students",
-      hoverData: "Students",
-      icon: faPeopleGroup,
-    },
-    {
       data: services,
       optionType: "toggle",
       options: ["Internet", "Electricity", "Water"],
       name: "Services",
       hoverData: "Services",
       icon: faBolt,
-    },
-    {
-      data: price,
-      optionType: "input",
-      options: [0],
-      name: "Price",
-      hoverData: "Pricing",
-      icon: faCoins,
     },
   ];
 
@@ -105,6 +124,67 @@ const Create_ = ({}: Create_Props) => {
     } else {
       console.log("No Images Selected!");
     }
+  };
+
+  const {
+    ready,
+    value,
+    setValue,
+    suggestions: { status, data },
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const storeImage = async (image: any) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage();
+      const fileName = `${location_.address}`;
+
+      const storageRef = ref(storage, `locations/${location_.address}/` + fileName);
+
+      const uploadTask = uploadBytesResumable(storageRef, image);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot: any) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+              break;
+          }
+        },
+        (error: any) => {
+          reject(error);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL: any) => {
+            resolve(downloadURL);
+            // setImages(images.push(downloadURL));
+            const uuid_ = v4()
+            await setDoc(doc(db, "locations", uuid_), {
+              uid: uuid_,
+              // owner: currentUser_?.uid,
+              timestamp: serverTimestamp(),
+              accr: accr_,
+              location: location_,
+              price: price_,
+              students: students_,
+              services: services_,
+              image: downloadURL,
+            });
+          });
+        }
+      );
+    });
   };
 
   return (
@@ -136,16 +216,10 @@ const Create_ = ({}: Create_Props) => {
                     setOption_(option_ + 1);
                   } else {
                     // Confirmation Step..
-                    console.log({
-                      accr: accr_,
-                      location: location_,
-                      price: price_,
-                      students: students_,
-                      services: services_,
-                      image: image_,
-                    });
+                    storeImage(image_[0])
                   }
                 }}
+                key={obj.iconName}
               >
                 <FontAwesomeIcon icon={obj} className={`w-[20px] h-[20px]`} />
               </div>
@@ -175,12 +249,27 @@ const Create_ = ({}: Create_Props) => {
                 <input
                   type={"text"}
                   placeholder={`Your answer here..`}
-                  className={`w-full h-[30px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
+                  value={obj.data == students ? tempStudents_ : tempPrice_}
+                  className={`w-full h-[35px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
                   onChange={(e) => {
                     if (obj.data == students) {
-                      setStudents_(e.target.value);
+                      // @ts-ignore
+                      isNaN(e.target.value)
+                        ? setStudentsTemp_("")
+                        : setStudentsTemp_(e.target.value);
+                      // @ts-ignore
+                      !(isNaN(e.target.value) || e.target.value == "") &&
+                        setStudents_(parseInt(e.target.value));
+                      e.target.value == "" && setStudents_(0);
                     } else {
-                      setPrice_(e.target.value);
+                      // @ts-ignore
+                      isNaN(e.target.value)
+                        ? setPriceTemp_("")
+                        : setPriceTemp_(e.target.value);
+                      // @ts-ignore
+                      !(isNaN(e.target.value) || e.target.value == "") &&
+                        setPrice_(parseInt(e.target.value));
+                      e.target.value == "" && setPrice_(0);
                     }
                   }}
                 />
@@ -195,8 +284,9 @@ const Create_ = ({}: Create_Props) => {
                           accr_ == obj_ ? "bg-black/70" : "bg-black/40"
                         } hover:bg-black/50 transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer flex flex-row justify-center items-center mx-1 text-white text-[15px] font-black`}
                         onClick={() => {
-                          setAccr_(obj_);
+                          setAccr_(obj_.toString());
                         }}
+                        key={obj_}
                       >
                         {obj_}
                       </div>
@@ -218,13 +308,27 @@ const Create_ = ({}: Create_Props) => {
                     hidden
                     className={`w-full h-[30px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
                   />
-                  <label htmlFor="images">
+                  {image_.length == 0 ? (
+                    <label htmlFor="images">
+                      <div
+                        className={`w-[120px] h-[30px] flex flex-col justify-center items-center bg-black/40 hover:bg-black/50 transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer mx-1 text-white text-[15px] font-black`}
+                        onClick={() => {}}
+                      >
+                        Select
+                      </div>
+                    </label>
+                  ) : (
                     <div
-                      className={`w-[120px] h-[30px] flex flex-col justify-center items-center bg-black/40 hover:bg-black/50 transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer mx-1 text-white text-[15px] font-black`}
+                      className={`w-[120px] h-[30px] flex flex-col justify-center items-center bg-red-500/50 hover:bg-red-500/80 transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer mx-1 text-white text-[15px] font-black`}
+                      onClick={() => {
+                        if (image_.length != 0) {
+                          setImage_([]);
+                        }
+                      }}
                     >
-                      Select
+                      Remove
                     </div>
-                  </label>
+                  )}
                 </div>
               ) : obj.optionType == "toggle" ? (
                 <div
@@ -233,16 +337,20 @@ const Create_ = ({}: Create_Props) => {
                   {obj.options.map((obj_) => {
                     return (
                       <div
-                        className={`${
+                        className={`w-[100px] h-[30px] ${
                           services_.includes(obj_)
-                            ? "bg-blue-500/80 hover:bg-red-500/40 text-white"
-                            : "hover:bg-blue-500/40 bg-white/50 hover:text-white text-blue-300"
-                        } flex w-[81px] h-[31px] rounded-md flex-row items-center justify-center text-center transition-all duration-400 cursor-pointer m-1`}
+                            ? "bg-black/70 hover:bg-red-500/50"
+                            : "bg-black/40 hover:bg-black/50"
+                        } transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer flex flex-row justify-center items-center mx-1 text-white text-[15px] font-black`}
                         onClick={() => {
-                          console.log(services_)
-                          if(services_.includes(obj_)){
-                          }else{
-                            setServices_([...services_, obj_])
+                          if (services_.includes(obj_)) {
+                            setServices_(
+                              services_.filter((e: any) => {
+                                return e !== obj_;
+                              })
+                            );
+                          } else {
+                            setServices_([...services_, obj_]);
                           }
                         }}
                         key={obj_}
@@ -250,14 +358,50 @@ const Create_ = ({}: Create_Props) => {
                         <div
                           className={`flex w-[80px] h-[30px] rounded-md flex-row items-center justify-center text-center transition-all duration-400`}
                         >
-                          <p className={`font-medium text-[14px]`}>{obj_}</p>
+                          <p className={``}>{obj_}</p>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <></>
+                <Combobox
+                  onSelect={async (e) => {
+                    setValue(e);
+                    const results = await getGeocode({address: e})
+                    const { lat, lng } = await getLatLng(results[0])
+                    setLocation_({address: e, lat: lat, lng: lng})
+                    console.log(location_);
+                    // console.log(results[0]);
+                  }}
+                >
+                  <ComboboxInput
+                    value={value}
+                    onChange={(e: any) => {
+                      setValue(e.target.value);
+                      // setMap__(e.target.value)
+                    }}
+                    // disabled={!ready}
+                    className={`w-full h-[35px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
+                    placeholder={`Search for an address..`}
+                  />
+                  <ComboboxPopover>
+                    <ComboboxList>
+                      {status == "OK" &&
+                        data.map(({ place_id, description }) => {
+                          return (
+                            <ComboboxOption
+                              key={place_id}
+                              value={description}
+                              className={`cursor-pointer`}
+                              onClick={async () => {}}
+                            />
+                          );
+                        })}
+                    </ComboboxList>
+                  </ComboboxPopover>
+                </Combobox>
+                
               )}
             </div>
           );
@@ -266,11 +410,13 @@ const Create_ = ({}: Create_Props) => {
           className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 absolute top-0 right-0 m-4`}
           onClick={() => {
             setAccr_("");
-            setImage_("");
-            setPrice_("");
-            setServices_("");
-            setStudents_("");
-            setLocation_("");
+            setImage_([]);
+            setPrice_(0);
+            setServices_([]);
+            setStudents_(0);
+            setLocation_([]);
+            setStudentsTemp_("");
+            setPriceTemp_("");
 
             setShowThis_("");
             setOption_(0);

@@ -12,22 +12,22 @@ export const ThisState = atom({
 
   export const PriceState = atom({
     key: 'PriceState',
-    default: '',
+    default: 0,
   });
 
   export const StudentsState = atom({
     key: 'StudentsState',
-    default: '',
+    default: 0,
   });
 
-  export const LocationState = atom({
+  export const LocationState = atom<any>({
     key: 'LocationState',
-    default: '',
+    default: [],
   });
 
-  export const ImageState = atom({
+  export const ImageState = atom<any>({
     key: 'ImageState',
-    default: '',
+    default: [],
   });
 
   export const AccrState = atom({

@@ -6,34 +6,23 @@ import {
   faPowerOff,
   faQrcode,
   faSearch,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { auth } from "../firebase";
+import { signOut_, useAuth } from "../firebase";
 import { useRecoilState } from "recoil";
 import { ThisState } from "./atoms/atoms";
+import Router from "next/router";
 
 interface Nav_Props {}
 
 const Nav_ = ({}: Nav_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
-  const [email_, setEmail_] = useState("");
-  const [pwd_, setPwd_] = useState("");
 
-  const register = async () => {
-    try {
-      const user_ = await createUserWithEmailAndPassword(
-        auth, email_, pwd_
-      );
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  const currentUser_ = useAuth();
 
-  const login = async () => {};
-
-  const logout = async () => {};
   return (
     <div
       className={`w-[80px] h-[550px] rounded-lg shadow-sm bg-white/60 backdrop-blur-md fixed left-0 m-4 flex flex-col justify-start items-center`}
@@ -45,11 +34,15 @@ const Nav_ = ({}: Nav_Props) => {
         className={`w-[80px] h-[1px] flex flex-row justify-center items-center bg-black/0 mb-8 mt-4`}
       /> */}
       {[
-        { icon: faQrcode, action: "navigate to homepage", alt: '' },
-        { icon: faAdd, action: "add accom modal", alt: 'create' },
-        { icon: faEnvelope, action: "popup filters", alt: '' },
-        { icon: faCog, action: "settings", alt: '' },
-        { icon: faPowerOff, action: "authentication", alt: 'auth' },
+        { icon: faQrcode, action: "navigate to homepage", alt: "" },
+        { icon: faAdd, action: "add accom modal", alt: currentUser_ != null ? "create" : "auth" },
+        { icon: faEnvelope, action: "popup filters", alt: "" },
+        { icon: faCog, action: "settings", alt: "" },
+        {
+          icon: currentUser_ != null ? faPowerOff : faUser,
+          action: "authentication",
+          alt: "auth",
+        },
       ].map((obj) => {
         return (
           <div
@@ -58,8 +51,17 @@ const Nav_ = ({}: Nav_Props) => {
           >
             <div
               className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200`}
-              onClick={() => {
-                setShowThis_(obj.alt);
+              onClick={async () => {
+                if (obj.alt == "auth" && currentUser_ != null) {
+                  await signOut_().then((obj__) => {
+                    console.log("User signed out");
+                  });
+                } else {
+                  setShowThis_(obj.alt);
+                  if (obj.alt == "") {
+                    Router.push("/");
+                  }
+                }
               }}
             >
               <FontAwesomeIcon
