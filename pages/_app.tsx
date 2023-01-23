@@ -6,8 +6,14 @@ import Nav_ from "../components/Nav_";
 import Accoms_ from "../components/Accom_";
 import Auth_ from "../components/Auth_";
 import Create_ from "../components/Create_";
+import PopupModal_ from "../components/PopupModal_";
+import { useEffect } from "react";
+import { getLocations } from "../firebase";
+import { useRecoilState } from "recoil";
+import { CacheState } from "../components/atoms/atoms";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  
   return (
     <RecoilRoot>
       <div className="flex min-h-screen flex-col items-center justify-center">
@@ -20,6 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Create_/>
         <Auth_/>
         <Nav_/>
+        <PopupModal_/>
       </div>
     </RecoilRoot>
   );

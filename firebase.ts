@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { useEffect, useState } from "react";
 
@@ -26,6 +26,15 @@ const db = getFirestore(app);
 const store = getStorage(app);
 
 export {db, store}
+
+export const getLocations = async () => {
+  const colRef = collection(db, 'locations')
+  const data = await getDocs(colRef)
+  return(data.docs.map((doc_) => ({
+    ...doc_.data(), id: doc_.id
+  })))
+}
+
 export const signUp_ = (email: any, password: any) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };

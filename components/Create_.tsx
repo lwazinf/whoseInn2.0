@@ -15,6 +15,7 @@ import {
   ServicesState,
   PriceState,
   StudentsState,
+  NotifState,
 } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -37,6 +38,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db, useAuth } from "../firebase";
 import { v4 } from "uuid";
+import Router from "next/router";
 
 interface Create_Props {}
 
@@ -56,6 +58,7 @@ const Create_ = ({}: Create_Props) => {
   const [students_, setStudents_] = useRecoilState(StudentsState);
 
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
+  const [notif_, setNotif_] = useRecoilState(NotifState);
   const [option_, setOption_] = useState(0);
   const [tempStudents_, setStudentsTemp_] = useState("");
   const [tempPrice_, setPriceTemp_] = useState("");
@@ -134,6 +137,14 @@ const Create_ = ({}: Create_Props) => {
     clearSuggestions,
   } = usePlacesAutocomplete();
 
+  const runNotif_ = (notification: string) => {
+    setNotif_(notification)
+    setTimeout(() => {
+      return setNotif_('')
+    }, 2500)
+
+  }
+
   const storeImage = async (image: any) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
@@ -172,7 +183,7 @@ const Create_ = ({}: Create_Props) => {
             const uuid_ = v4()
             await setDoc(doc(db, "locations", uuid_), {
               uid: uuid_,
-              // owner: currentUser_?.uid,
+              owner: currentUser_?.uid,
               timestamp: serverTimestamp(),
               accr: accr_,
               location: location_,
@@ -180,6 +191,10 @@ const Create_ = ({}: Create_Props) => {
               students: students_,
               services: services_,
               image: downloadURL,
+            }).then(() => {
+              setShowThis_('')
+              runNotif_(`${location_.address} Link created..`)
+              Router.push("/");
             });
           });
         }

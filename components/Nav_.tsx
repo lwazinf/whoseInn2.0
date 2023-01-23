@@ -13,16 +13,24 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { signOut_, useAuth } from "../firebase";
 import { useRecoilState } from "recoil";
-import { ThisState } from "./atoms/atoms";
+import { NotifState, ThisState } from "./atoms/atoms";
 import Router from "next/router";
 
 interface Nav_Props {}
 
 const Nav_ = ({}: Nav_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
+  const [notif_, setNotif_] = useRecoilState(NotifState);
 
   const currentUser_ = useAuth();
 
+  const runNotif_ = (notification: string) => {
+    setNotif_(notification)
+    setTimeout(() => {
+      return setNotif_('')
+    }, 2500)
+  }
+  
   return (
     <div
       className={`w-[80px] h-[550px] rounded-lg shadow-sm bg-white/60 backdrop-blur-md fixed left-0 m-4 flex flex-col justify-start items-center`}
@@ -54,7 +62,7 @@ const Nav_ = ({}: Nav_Props) => {
               onClick={async () => {
                 if (obj.alt == "auth" && currentUser_ != null) {
                   await signOut_().then((obj__) => {
-                    console.log("User signed out");
+                    runNotif_('User signed out')
                   });
                 } else {
                   setShowThis_(obj.alt);

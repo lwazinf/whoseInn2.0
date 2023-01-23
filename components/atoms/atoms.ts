@@ -34,3 +34,29 @@ export const ThisState = atom({
     key: 'AccrState',
     default: '',
   });
+
+  export const NotifState = atom({
+    key: 'NotifState',
+    default: '',
+  });
+
+  export const CacheState = atom({
+    key: 'CacheState',
+    default: [],
+  });
+
+  export const FocusState = atom({
+    key: 'FocusState',
+    default: {},
+  });
+
+  export const MapState = atom({
+    key: 'MapState',
+    default: false,
+  });
+
+  export const IsSignInState = atom({
+    key: 'IsSignInState',
+    default: true,
+  });
+  

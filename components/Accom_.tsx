@@ -1,16 +1,29 @@
 import { useRecoilState } from "recoil";
-import { ThisState } from "./atoms/atoms";
+import { FocusState, MapState, ThisState } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faHeart, faInfoCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faBolt,
+  faLocationCrosshairs,
+  faDroplet,
+  faHeart,
+  faInfoCircle,
+  faTimes,
+  faTowerBroadcast,
+} from "@fortawesome/free-solid-svg-icons";
+import Map_ from "./Map_";
 
 interface Accom_Props {}
 
 const Accom_ = ({}: Accom_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
+  const [focus_, setFocus_] = useRecoilState(FocusState);
+  const [map_, setMap_] = useRecoilState(MapState);
   return (
     <div
       className={`w-full min-h-screen fixed top-0 left-0 flex flex-col justify-center items-center bg-black/40 backdrop-blur-sm transition-all duration-200 ${
-        showThis_ == 'accom'
+        showThis_ == "accom"
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}
@@ -21,34 +34,100 @@ const Accom_ = ({}: Accom_Props) => {
         <div className={`w-[700px] h-[450px] absolute top-0`}>
           <img
             className={`h-full w-full object-cover`}
-            src={`https://images.pexels.com/photos/1918291/pexels-photo-1918291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
+            src={`${focus_.image}`}
           />
         </div>
+
         <div
           className={`w-[50px] h-[450px] absolute right-0 flex flex-col justify-end items-center py-4 bg-white`}
         >
-          {
-            [faHeart, faCheckCircle, faInfoCircle].map((obj) => {
-                return (
-                    <div
-            className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 my-2`}
-            onClick={() => {}}
-            key={obj.iconName}
-          >
-            <FontAwesomeIcon icon={obj} className={`w-[20px] h-[20px]`} />
-          </div>
-                )
-            })
-          }
+          {[faArrowLeft, faLocationCrosshairs, faArrowRight].map((obj) => {
+            return (
+              <div
+                className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 my-2`} 
+                // ${
+                //   focus_.accr == "Full" && obj == faLocationCrosshairs
+                //     ? "text-green-400"
+                //     : focus_.accr == "Prov." && obj == faLocationCrosshairs
+                //     ? "text-orange-400"
+                //     : focus_.accr == "N/A" && obj == faLocationCrosshairs
+                //     ? "text-red-400"
+                //     : "text-black/40 hover:text-black/60"
+                // } 
+                onClick={() => {
+                  if (obj == faLocationCrosshairs) {
+                    setMap_(!map_);
+                  }
+                }}
+                key={obj.iconName}
+              >
+                <FontAwesomeIcon icon={obj} className={`w-[20px] h-[20px]`} />
+              </div>
+            );
+          })}
         </div>
         <div
           className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 absolute top-0 right-0 m-4`}
           onClick={() => {
-            setShowThis_('');
+            setMap_(false);
+            setShowThis_("");
           }}
         >
           <FontAwesomeIcon icon={faTimes} className={`w-[20px] h-[20px]`} />
         </div>
+        <div
+          className={`w-[200px] h-[100px] rounded-[4px] bg-white/80 backdrop-blur-lg flex flex-col justify-center items-center absolute right-[60px] bottom-5 transition-all hover:duration-200 duration-[1500ms]`}
+        >
+          {
+            map_ ? (
+              <div className={`text-[15px] font-thin text-black/70 flex flex-row text-center p-2`}>
+            <p className={`text-[13px] font-medium text-black/50`}>
+              {`${focus_.location.address}`}
+            </p>
+          </div>
+            ) : (
+              <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
+            Rent:{" "}
+            <p className={`text-[15px] font-medium text-black/50`}>
+              {`R${focus_.price}`}
+            </p>
+          </div>
+            )
+          }
+          {
+            !map_ ? <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
+            Students:{" "}
+            <p className={`text-[15px] font-medium text-black/50`}>
+              {`${focus_.students}`}
+            </p>
+          </div> : <p className={`text-[13px] font-normal text-black/70 mt-[0px]`}>0746854339</p>
+          }
+          {
+            !map_ && <div
+            className={`flex flex-row justify-center items-center w-full mt-1`}
+          >
+            {focus_?.services?.includes("Water") && (
+              <FontAwesomeIcon
+                icon={faDroplet}
+                className={`w-[13px] h-[13px] m-1 text-black/50`}
+              />
+            )}
+            {focus_?.services?.includes("Electricity") && (
+              <FontAwesomeIcon
+                icon={faBolt}
+                className={`w-[13px] h-[13px] m-1 text-black/50`}
+              />
+            )}
+            {focus_?.services?.includes("Internet") && (
+              <FontAwesomeIcon
+                icon={faTowerBroadcast}
+                className={`w-[13px] h-[13px] m-1 text-black/50`}
+              />
+            )}
+          </div>
+          }
+        </div>
+        <Map_ />
       </div>
     </div>
   );
