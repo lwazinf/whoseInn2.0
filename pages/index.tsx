@@ -38,6 +38,7 @@ const Home: NextPage = () => {
                 {/* @ts-ignore */}
                 <img
                   className={`w-full h-full object-cover rounded-lg`}
+                  // @ts-ignore
                   src={obj?.image}
                 />
               </div>
