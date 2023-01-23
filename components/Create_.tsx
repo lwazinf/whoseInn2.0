@@ -183,6 +183,7 @@ const Create_ = ({}: Create_Props) => {
             const uuid_ = v4()
             await setDoc(doc(db, "locations", uuid_), {
               uid: uuid_,
+              // @ts-ignore 
               owner: currentUser_?.uid,
               timestamp: serverTimestamp(),
               accr: accr_,

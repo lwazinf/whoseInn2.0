@@ -19,7 +19,9 @@ const Map_ = ({}: Map_Props) => {
         <GoogleMap
           zoom={16}
           center={{
+            // @ts-ignore 
             lat: Object.keys(focus_).length == 0 ? 0 : focus_.location.lat,
+            // @ts-ignore 
             lng: Object.keys(focus_).length == 0 ? 0 : focus_.location.lng,
           }}
           mapContainerClassName={`w-full h-full opacity-80 transition-all duration-200`}
@@ -27,7 +29,9 @@ const Map_ = ({}: Map_Props) => {
         >
           <Marker
             position={{
+            // @ts-ignore 
               lat: Object.keys(focus_).length == 0 ? 0 : focus_.location.lat,
+            // @ts-ignore 
             lng: Object.keys(focus_).length == 0 ? 0 : focus_.location.lng,
             }}
           />
