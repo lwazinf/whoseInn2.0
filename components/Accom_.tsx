@@ -104,7 +104,7 @@ const Accom_ = ({}: Accom_Props) => {
               {/* @ts-ignore */}
               {`${focus_.students}`}
             </p>
-          </div> : <p className={`text-[13px] font-normal text-black/70 mt-[0px]`}>0746854339</p>
+          </div> : <p className={`text-[13px] font-normal text-black/70 mt-[0px]`}>xxx-xxx-xxxx</p>
           }
           {
             !map_ && <div
