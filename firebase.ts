@@ -25,7 +25,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
 
-export {db, store}
+export {db, store, auth}
 
 export const getLocations = async () => {
   const colRef = collection(db, 'locations')
@@ -51,6 +51,7 @@ export const useAuth = () => {
   const [currentUser_, setCurrentUser_] = useState();
 
   useEffect(() => {
+    // @ts-ignore 
     const unsub = onAuthStateChanged(auth, (user) => setCurrentUser_(user));
     return unsub;
   }, []);
