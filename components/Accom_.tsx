@@ -34,6 +34,7 @@ const Accom_ = ({}: Accom_Props) => {
         <div className={`w-[700px] h-[450px] absolute top-0`}>
           <img
             className={`h-full w-full object-cover`}
+            //  @ts-ignore 
             src={`${focus_.image}`}
           />
         </div>
@@ -82,6 +83,7 @@ const Accom_ = ({}: Accom_Props) => {
             map_ ? (
               <div className={`text-[15px] font-thin text-black/70 flex flex-row text-center p-2`}>
             <p className={`text-[13px] font-medium text-black/50`}>
+              {/* @ts-ignore */}
               {`${focus_.location.address}`}
             </p>
           </div>
@@ -89,6 +91,7 @@ const Accom_ = ({}: Accom_Props) => {
               <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
             Rent:{" "}
             <p className={`text-[15px] font-medium text-black/50`}>
+              {/* @ts-ignore */}
               {`R${focus_.price}`}
             </p>
           </div>
@@ -98,6 +101,7 @@ const Accom_ = ({}: Accom_Props) => {
             !map_ ? <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
             Students:{" "}
             <p className={`text-[15px] font-medium text-black/50`}>
+              {/* @ts-ignore */}
               {`${focus_.students}`}
             </p>
           </div> : <p className={`text-[13px] font-normal text-black/70 mt-[0px]`}>0746854339</p>
@@ -106,18 +110,21 @@ const Accom_ = ({}: Accom_Props) => {
             !map_ && <div
             className={`flex flex-row justify-center items-center w-full mt-1`}
           >
+              {/* @ts-ignore */}
             {focus_?.services?.includes("Water") && (
               <FontAwesomeIcon
                 icon={faDroplet}
                 className={`w-[13px] h-[13px] m-1 text-black/50`}
               />
             )}
+              {/* @ts-ignore */}
             {focus_?.services?.includes("Electricity") && (
               <FontAwesomeIcon
                 icon={faBolt}
                 className={`w-[13px] h-[13px] m-1 text-black/50`}
               />
             )}
+              {/* @ts-ignore */}
             {focus_?.services?.includes("Internet") && (
               <FontAwesomeIcon
                 icon={faTowerBroadcast}
