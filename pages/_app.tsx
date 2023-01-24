@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { getLocations } from "../firebase";
 import { useRecoilState } from "recoil";
 import { CacheState } from "../components/atoms/atoms";
+import NavNotif_ from "../components/NavNotif_";
 
 function MyApp({ Component, pageProps }: AppProps) {
   
@@ -25,6 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Accoms_/>
         <Create_/>
         <Auth_/>
+        <NavNotif_/>
         <Nav_/>
         <PopupModal_/>
       </div>

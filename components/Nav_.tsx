@@ -13,7 +13,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { signOut_, useAuth } from "../firebase";
 import { useRecoilState } from "recoil";
-import { NotifState, ThisState } from "./atoms/atoms";
+import { HoverState, NotifState, ThisState } from "./atoms/atoms";
 import Router from "next/router";
 
 interface Nav_Props {}
@@ -21,6 +21,7 @@ interface Nav_Props {}
 const Nav_ = ({}: Nav_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [notif_, setNotif_] = useRecoilState(NotifState);
+  const [hoverData_, setHoverData_] = useRecoilState(HoverState);
 
   const currentUser_ = useAuth();
 
@@ -42,14 +43,14 @@ const Nav_ = ({}: Nav_Props) => {
         className={`w-[80px] h-[1px] flex flex-row justify-center items-center bg-black/0 mb-8 mt-4`}
       /> */}
       {[
-        { icon: faQrcode, action: "navigate to homepage", alt: "" },
-        { icon: faAdd, action: "add accom modal", alt: currentUser_ != null ? "create" : "auth" },
-        { icon: faEnvelope, action: "popup filters", alt: "" },
-        { icon: faCog, action: "settings", alt: "" },
+        { icon: faQrcode, action: "navigate to homepage", element: 'Home', alt: "" },
+        { icon: faAdd, action: "add accom modal", element: 'Create', alt: currentUser_ != null ? "create" : "auth" },
+        { icon: faEnvelope, action: "popup filters", element: 'Requests', alt: "" },
+        { icon: faCog, action: "settings", element: 'settings', alt: "" },
         {
           icon: currentUser_ != null ? faPowerOff : faUser,
           action: "authentication",
-          alt: "auth",
+          element: 'Auth', alt: "auth",
         },
       ].map((obj) => {
         return (
@@ -59,10 +60,17 @@ const Nav_ = ({}: Nav_Props) => {
           >
             <div
               className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200`}
+              onMouseEnter={() => {
+                setHoverData_(obj.element)
+              }}
+              onMouseLeave={() => {
+                setHoverData_('')
+              }}
               onClick={async () => {
                 if (obj.alt == "auth" && currentUser_ != null) {
                   await signOut_().then((obj__) => {
                     runNotif_('User signed out')
+                    setShowThis_('auth')
                   });
                 } else {
                   setShowThis_(obj.alt);

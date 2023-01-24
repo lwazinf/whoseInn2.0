@@ -59,4 +59,9 @@ export const ThisState = atom({
     key: 'IsSignInState',
     default: true,
   });
+
+  export const HoverState = atom({
+    key: 'HoverState',
+    default: '',
+  })
   
