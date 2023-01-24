@@ -26,18 +26,18 @@ const Auth_ = ({}: Auth_Props) => {
       }`}
     >
       <div
-        className={`w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
+        className={`w-[300px] md:w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
       >
         <div className={`w-[300px] h-[450px] absolute top-0`}>
           <img
-            className={`h-full w-full object-cover`}
+            className={`h-full w-full object-cover md:opacity-100 opacity-0 md:pointer-events-auto pointer-events-none`}
             src={`https://images.pexels.com/photos/4939668/pexels-photo-4939668.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
           />
         </div>
-        <Gateway_ />
         <div
-          className={`w-[50px] h-[450px] absolute right-0 flex flex-col justify-end items-center py-4 bg-white`}
+          className={`w-[50px] h-[450px] absolute right-0 flex flex-col justify-end items-center py-4 md:bg-white`}
         >
+        <Gateway_ />
           {/* {[
             // faArrowRight
           ].map((obj) => {
@@ -84,7 +84,7 @@ const Gateway_ = ({}: Gateway_Props) => {
   };
   return (
     <div
-      className={`w-[400px] h-full absolute top-0 right-[50px] flex flex-col justify-center items-center`}
+      className={`w-[200px] md:w-[400px] h-full absolute top-0 right-[50px] flex flex-col justify-center items-center`}
     >
       <div
         className={`flex relative w-full h-full flex-col items-center justify-center mx-2 
