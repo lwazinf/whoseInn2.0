@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 export const ThisState = atom({
     key: 'ThisState',
-    default: '',
+    default: 'auth',
   });
 
   export const ServicesState = atom<any>({
@@ -57,7 +57,7 @@ export const ThisState = atom({
 
   export const IsSignInState = atom({
     key: 'IsSignInState',
-    default: true,
+    default: false,
   });
 
   export const HoverState = atom({

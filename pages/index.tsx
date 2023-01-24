@@ -18,13 +18,13 @@ const Home: NextPage = () => {
     };
     y_();
   }, []);
-  
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3x0RxMZbl6LRapAhKlegw6Xmp9rupr0g&libraries=places"></script>
       <main className="flex w-full h-full flex-col items-center justify-center text-center">
         <div
-          className={`m-auto grid grid-cols-3 gap-4 flex flex-col items-center justify-center`}
+          className={`m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 flex flex-col items-center justify-center`}
         >
           {cache_?.map((obj) => {
             return (
