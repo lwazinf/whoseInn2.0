@@ -8,7 +8,7 @@ const NavNotif_ = ({}: NavNotif_Props) => {
   
   return (
     <div
-      className={`w-[100px] h-[350px] fixed right-[60px] md:left-[60px] m-4 flex flex-col justify-center items-center`}
+      className={`w-[100px] h-[350px] fixed right-[60px] md:left-[60px] m-4 flex flex-col justify-center items-center pointer-events-none opacity-0 md:opacity-100`}
     >
       {/* <div
         className={`w-[80px] h-[120px] md:relative md:pointer-events-auto absolute pointer-events-none flex flex-row justify-center items-center`}

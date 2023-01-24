@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { signOut_, useAuth } from "../firebase";
+import { checkUp_, signOut_, useAuth } from "../firebase";
 import { useRecoilState } from "recoil";
 import { HoverState, NotifState, ThisState } from "./atoms/atoms";
 import Router from "next/router";
@@ -22,8 +22,6 @@ const Nav_ = ({}: Nav_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [notif_, setNotif_] = useRecoilState(NotifState);
   const [hoverData_, setHoverData_] = useRecoilState(HoverState);
-
-  const currentUser_ = useAuth();
 
   const runNotif_ = (notification: string) => {
     setNotif_(notification)
@@ -44,11 +42,11 @@ const Nav_ = ({}: Nav_Props) => {
       /> */}
       {[
         { icon: faQrcode, action: "navigate to homepage", element: 'Home', alt: "" },
-        { icon: faAdd, action: "add accom modal", element: 'Create', alt: currentUser_ != null ? "create" : "auth" },
+        { icon: faAdd, action: "add accom modal", element: 'Create', alt: checkUp_() ? "create" : "auth" },
         { icon: faEnvelope, action: "popup filters", element: 'Requests', alt: "" },
         { icon: faCog, action: "settings", element: 'Settings', alt: "" },
         {
-          icon: currentUser_ != null ? faPowerOff : faUser,
+          icon: checkUp_() ? faPowerOff : faUser,
           action: "authentication",
           element: 'Auth', alt: "auth",
         },
@@ -67,7 +65,7 @@ const Nav_ = ({}: Nav_Props) => {
                 setHoverData_('')
               }}
               onClick={async () => {
-                if (obj.alt == "auth" && currentUser_ != null) {
+                if (obj.alt == "auth" && checkUp_ != null) {
                   await signOut_().then((obj__) => {
                     runNotif_('User signed out')
                     setShowThis_('auth')

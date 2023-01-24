@@ -34,7 +34,8 @@ const Home: NextPage = () => {
                   setShowThis_("accom");
                   setFocus_(obj);
                 }}
-                key={obj}
+                // @ts-ignore
+                key={obj?.uid}
               >
                 {/* @ts-ignore */}
                 <img

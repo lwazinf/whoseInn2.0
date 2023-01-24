@@ -35,6 +35,10 @@ export const getLocations = async () => {
   })))
 }
 
+export const checkUp_ = () => {
+  return auth.currentUser == null;
+};
+
 export const signUp_ = (email: any, password: any) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };

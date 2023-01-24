@@ -403,17 +403,22 @@ const Create_ = ({}: Create_Props) => {
                   />
                   <ComboboxPopover>
                     <ComboboxList>
-                      {status == "OK" &&
+                      {
+                      status == "OK" &&
                         data.map(({ place_id, description }) => {
                           return (
                             <ComboboxOption
                               key={place_id}
                               value={description}
-                              className={`cursor-pointer`}
-                              onClick={async () => {}}
+                              className={`cursor-pointer bg-white hover:bg-gray-200 text-[13px] p-2 text-center min-w-[20px] min-h-[20px] border-b-[1px] border-b-black/10 border-solid`}
+                              onClick={async () => {
+                                console.log(description)
+                                clearSuggestions()
+                              }}
                             />
                           );
-                        })}
+                        })
+                        }
                     </ComboboxList>
                   </ComboboxPopover>
                 </Combobox>

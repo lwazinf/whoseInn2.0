@@ -16,6 +16,7 @@ interface Auth_Props {}
 
 const Auth_ = ({}: Auth_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
+  // const [currentUser_, setCurrentUser_] = useRecoilState();
   return (
     <div
       className={`w-full min-h-screen fixed top-0 left-0 flex flex-col justify-center items-center bg-black/40 backdrop-blur-sm transition-all duration-200 ${
@@ -86,7 +87,9 @@ const Gateway_ = ({}: Gateway_Props) => {
       className={`w-[400px] h-full absolute top-0 right-[50px] flex flex-col justify-center items-center`}
     >
       <div
-        className={`flex relative w-full h-full flex-col items-center justify-center mx-2 bg-white/30 p-2`}
+        className={`flex relative w-full h-full flex-col items-center justify-center mx-2 
+        
+         p-2`}
       >
         <p
           className={`text-[20px] text-black/80 font-black text-center w-full mb-5`}
