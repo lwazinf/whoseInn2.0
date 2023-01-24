@@ -12,7 +12,6 @@ import { getLocations } from "../firebase";
 import { useRecoilState } from "recoil";
 import { CacheState } from "../components/atoms/atoms";
 import NavNotif_ from "../components/NavNotif_";
-import Link from "next/link";
 
 function MyApp({ Component, pageProps }: AppProps) {
   
@@ -21,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <div className="flex min-h-screen flex-col items-center justify-center">
         <Head>
           <title>WhoseInn :: Welcome</title>
-          <Link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         <Component {...pageProps} />
         <Accoms_/>
