@@ -18,6 +18,7 @@ const Home: NextPage = () => {
     };
     y_();
   }, []);
+  
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3x0RxMZbl6LRapAhKlegw6Xmp9rupr0g&libraries=places"></script>
@@ -44,6 +45,9 @@ const Home: NextPage = () => {
               </div>
             );
           })}
+          {/* {
+            h_
+          } */}
         </div>
       </main>
     </div>

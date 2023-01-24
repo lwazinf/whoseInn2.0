@@ -33,11 +33,11 @@ const Nav_ = ({}: Nav_Props) => {
   
   return (
     <div
-      className={`w-[80px] h-[550px] rounded-lg shadow-sm bg-white/60 backdrop-blur-md fixed left-0 m-4 flex flex-col justify-start items-center`}
+      className={`w-[60px] h-[350px] rounded-lg shadow-sm bg-white/60 backdrop-blur-md fixed right-0 md:left-0 m-4 flex flex-col justify-center items-center`}
     >
-      <div
-        className={`w-[80px] h-[120px] flex flex-row justify-center items-center`}
-      ></div>
+      {/* <div
+        className={`w-[80px] h-[120px] md:relative md:pointer-events-auto absolute pointer-events-none flex flex-row justify-center items-center`}
+      ></div> */}
       {/* <div
         className={`w-[80px] h-[1px] flex flex-row justify-center items-center bg-black/0 mb-8 mt-4`}
       /> */}
