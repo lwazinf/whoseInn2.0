@@ -34,8 +34,19 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { auth, db, useAuth } from "../firebase";
 import { v4 } from "uuid";
 import Router from "next/router";
@@ -63,7 +74,7 @@ const Create_ = ({}: Create_Props) => {
   const [tempStudents_, setStudentsTemp_] = useState("");
   const [tempPrice_, setPriceTemp_] = useState("");
 
-  const currentUser_ = useAuth()
+  const currentUser_ = useAuth();
 
   const mockData_ = [
     {
@@ -138,19 +149,44 @@ const Create_ = ({}: Create_Props) => {
   } = usePlacesAutocomplete();
 
   const runNotif_ = (notification: string) => {
-    setNotif_(notification)
+    setNotif_(notification);
     setTimeout(() => {
-      return setNotif_('')
-    }, 2500)
+      return setNotif_("");
+    }, 2500);
+  };
 
-  }
+  const getDist = async (origin: any) => {
+    const destination = [-29.107512917392913, 26.19251497092256];
+    let distance;
+    const matrix_ = new google.maps.DistanceMatrixService();
+    await matrix_.getDistanceMatrix(
+      {
+        origins: [new google.maps.LatLng(origin[0], origin[1])],
+        destinations: [new google.maps.LatLng(destination[0], destination[1])],
+        travelMode: google.maps.TravelMode.WALKING,
+      },
+      (response, status) => {
+        if (status === "OK") {
+          // @ts-ignore
+          distance = parseFloat(response?.rows[0].elements[0].distance.text.split(' ')[0]);
+        } else {
+          console.log(`Error: ${status}`);
+        }
+      }
+    );
+    return distance;
+  };
+
 
   const storeImage = async (image: any) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
       const fileName = `${location_.address}`;
 
-      const storageRef = ref(storage, `locations/${location_.address}/` + fileName);
+      const storageRef = ref(
+        storage,
+        `locations/${location_.address}/` + fileName
+      );
 
       const uploadTask = uploadBytesResumable(storageRef, image);
 
@@ -177,27 +213,30 @@ const Create_ = ({}: Create_Props) => {
         () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL: any) => {
-            resolve(downloadURL);
-            // setImages(images.push(downloadURL));
-            const uuid_ = v4()
-            await setDoc(doc(db, "locations", uuid_), {
-              uid: uuid_,
-              // @ts-ignore 
-              owner: currentUser_?.uid,
-              timestamp: serverTimestamp(),
-              accr: accr_,
-              location: location_,
-              price: price_,
-              students: students_,
-              services: services_,
-              image: downloadURL,
-            }).then(() => {
-              setShowThis_('')
-              runNotif_(`${location_.address} Link created..`)
-              Router.push("/");
-            });
-          });
+          getDownloadURL(uploadTask.snapshot.ref).then(
+            async (downloadURL: any) => {
+              resolve(downloadURL);
+              // setImages(images.push(downloadURL));
+              const uuid_ = v4();
+
+              await setDoc(doc(db, "locations", uuid_), {
+                uid: uuid_,
+                // @ts-ignore
+                owner: currentUser_?.uid,
+                timestamp: serverTimestamp(),
+                accr: accr_,
+                location: location_,
+                price: price_,
+                students: students_,
+                services: services_,
+                image: downloadURL,
+              }).then(() => {
+                setShowThis_("");
+                runNotif_(`${location_.address} Link created..`);
+                Router.reload()
+              });
+            }
+          );
         }
       );
     });
@@ -212,11 +251,11 @@ const Create_ = ({}: Create_Props) => {
       }`}
     >
       <div
-        className={`w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
+        className={`w-[300px] md:w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
       >
-        <div className={`w-[300px] h-[450px] absolute top-0`}>
+        <div className={`w-[300px] h-[450px] absolute top-0 md:opacity-100 opacity-0 pointer-events-none`}>
           <img
-            className={`h-full w-full object-cover`}
+            className={`h-full w-full object-cover md:opacity-100 opacity-0 pointer-events-none`}
             src={`https://images.pexels.com/photos/14613134/pexels-photo-14613134.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
           />
         </div>
@@ -232,7 +271,7 @@ const Create_ = ({}: Create_Props) => {
                     setOption_(option_ + 1);
                   } else {
                     // Confirmation Step..
-                    storeImage(image_[0])
+                    storeImage(image_[0]);
                   }
                 }}
                 key={obj.iconName}
@@ -382,13 +421,16 @@ const Create_ = ({}: Create_Props) => {
                 </div>
               ) : (
                 <Combobox
-                  onSelect={async (e) => {
-                    setValue(e);
-                    const results = await getGeocode({address: e})
-                    const { lat, lng } = await getLatLng(results[0])
-                    setLocation_({address: e, lat: lat, lng: lng})
-                    console.log(location_);
-                    // console.log(results[0]);
+                  className={`w-full h-[35px]`}
+                  onSelect={async (address_) => {
+                    setValue(address_);
+                    const results = await getGeocode({ address: address_ });
+                    const { lat, lng } = await getLatLng(results[0]);
+                    
+                    getDist([lat, lng]).then((distance_) => {
+                      console.log(distance_)
+                      setLocation_({ address: address_, lat: lat, lng: lng, distance: distance_ })
+                    })
                   }}
                 >
                   <ComboboxInput
@@ -398,31 +440,27 @@ const Create_ = ({}: Create_Props) => {
                       // setMap__(e.target.value)
                     }}
                     // disabled={!ready}
-                    className={`w-full h-[35px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
+                    className={`w-full h-[35px] text-[13px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
                     placeholder={`Search for an address..`}
                   />
                   <ComboboxPopover>
                     <ComboboxList>
-                      {
-                      status == "OK" &&
+                      {status == "OK" &&
                         data.map(({ place_id, description }) => {
                           return (
                             <ComboboxOption
                               key={place_id}
                               value={description}
                               className={`cursor-pointer bg-white hover:bg-gray-200 text-[13px] p-2 text-center min-w-[20px] min-h-[20px] border-b-[1px] border-b-black/10 border-solid`}
-                              onClick={async () => {
-                                console.log(description)
-                                clearSuggestions()
+                              onClick={() => {
+                                clearSuggestions();
                               }}
                             />
                           );
-                        })
-                        }
+                        })}
                     </ComboboxList>
                   </ComboboxPopover>
                 </Combobox>
-                
               )}
             </div>
           );

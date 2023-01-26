@@ -28,9 +28,9 @@ const Auth_ = ({}: Auth_Props) => {
       <div
         className={`w-[300px] md:w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
       >
-        <div className={`w-[300px] h-[450px] absolute top-0`}>
+        <div className={`w-[300px] h-[450px] absolute top-0 md:opacity-100 opacity-0 pointer-events-none`}>
           <img
-            className={`h-full w-full object-cover md:opacity-100 opacity-0 md:pointer-events-auto pointer-events-none`}
+            className={`h-full w-full object-cover md:opacity-100 opacity-0 pointer-events-none`}
             src={`https://images.pexels.com/photos/4939668/pexels-photo-4939668.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
           />
         </div>

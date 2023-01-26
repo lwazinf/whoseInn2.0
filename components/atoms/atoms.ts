@@ -22,7 +22,7 @@ export const ThisState = atom({
 
   export const LocationState = atom<any>({
     key: 'LocationState',
-    default: [],
+    default: {},
   });
 
   export const ImageState = atom<any>({
@@ -63,5 +63,10 @@ export const ThisState = atom({
   export const HoverState = atom({
     key: 'HoverState',
     default: '',
+  })
+
+  export const DeleteState = atom({
+    key: 'DeleteState',
+    default: '0c6a3f31-5ec0-4eb0-91f9-c5b78fb6ae8b',
   })
   

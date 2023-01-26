@@ -3,6 +3,7 @@ import {
   faCog,
   faEnvelope,
   faNewspaper,
+  faPaperPlane,
   faPowerOff,
   faQrcode,
   faSearch,
@@ -45,7 +46,7 @@ const Nav_ = ({}: Nav_Props) => {
       {[
         { icon: faQrcode, action: "navigate to homepage", element: 'Home', alt: "" },
         { icon: faAdd, action: "add accom modal", element: 'Create', alt: currentUser_ != null ? "create" : "auth" },
-        { icon: faEnvelope, action: "popup filters", element: 'Requests', alt: "" },
+        { icon: faPaperPlane, action: "popup filters", element: 'Requests', alt: "" },
         { icon: faCog, action: "settings", element: 'Settings', alt: "" },
         {
           icon: currentUser_ != null ? faPowerOff : faUser,
