@@ -44,6 +44,7 @@ const Home: NextPage = () => {
           {cache_?.map((obj) => {
             return (
               <div
+              // @ts-ignore
                 className={`w-[350px] h-[200px] ${ obj.id == delete_ && mouseStatus_ == 'yes' ? 'bg-green-400/40': obj.id == delete_ && mouseStatus_ == 'no' ? 'bg-red-400/40' : 'bg-white'} rounded-lg backdrop-blur-ls shadow-sm overflow-hidden relative opacity-80 hover:opacity-100 transition-all duration-800 p-1`}
                 onClick={() => {
                   // setShowThis_("accom");
@@ -59,6 +60,7 @@ const Home: NextPage = () => {
                   src={obj?.image}
                 />
                 <div className={`min-w-2 min-h-2 px-1 pt-1 rounded-[7px] bg-white/60 backdrop-blur-lg absolute bottom-0 right-0 m-3 ${
+              // @ts-ignore
                   delete_ == obj.id ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
                 }`}>
                   <FontAwesomeIcon
@@ -73,6 +75,7 @@ const Home: NextPage = () => {
                         icon={faTrash}
                         className={`w-[15px] h-[15px] text-black/70  cursor-pointer my-2 hover:text-black transition-all duration-200`}
                         onClick={() => {
+              // @ts-ignore
                           setDelete_(obj?.id)
                         }}
                       />
