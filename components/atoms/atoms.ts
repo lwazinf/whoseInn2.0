@@ -67,6 +67,6 @@ export const ThisState = atom({
 
   export const DeleteState = atom({
     key: 'DeleteState',
-    default: '0c6a3f31-5ec0-4eb0-91f9-c5b78fb6ae8b',
+    default: '',
   })
   

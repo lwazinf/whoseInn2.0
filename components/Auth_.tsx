@@ -52,14 +52,14 @@ const Auth_ = ({}: Auth_Props) => {
             );
           })} */}
         </div>
-        <div
+        {/* <div
           className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 absolute top-0 right-0 m-4`}
           onClick={() => {
             setShowThis_("");
           }}
         >
           <FontAwesomeIcon icon={faTimes} className={`w-[20px] h-[20px]`} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

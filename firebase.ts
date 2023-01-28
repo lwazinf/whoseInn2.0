@@ -7,7 +7,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { useEffect, useState } from "react";
 
@@ -26,15 +26,18 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
 
-export {db, store, auth}
+export { db, store, auth };
 
 export const getLocations = async () => {
-  const colRef = collection(db, 'locations')
+ 
+  const colRef = collection(db, "locations");
+  // const query_ = await query(colRef, where('owner', '==', 'RUvdWw22QmYVqBF9VYxKmKtJPtI2'))
   const data = await getDocs(colRef)
-  return(data.docs.map((doc_) => ({
-    ...doc_.data(), id: doc_.id
-  })))
-}
+  return data.docs.map((doc_) => ({
+    ...doc_.data(),
+    id: doc_.id,
+  }));
+};
 
 export const checkUp_ = () => {
   return auth.currentUser == null;
@@ -56,9 +59,9 @@ export const useAuth = () => {
   const [currentUser_, setCurrentUser_] = useState();
 
   useEffect(() => {
-    // @ts-ignore 
+    // @ts-ignore
     const unsub = onAuthStateChanged(auth, (user) => setCurrentUser_(user));
     return unsub;
   }, []);
-  return currentUser_
+  return currentUser_;
 };

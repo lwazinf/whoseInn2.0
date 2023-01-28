@@ -44,10 +44,10 @@ const Nav_ = ({}: Nav_Props) => {
         className={`w-[80px] h-[1px] flex flex-row justify-center items-center bg-black/0 mb-8 mt-4`}
       /> */}
       {[
-        { icon: faQrcode, action: "navigate to homepage", element: 'Home', alt: "" },
+        { icon: faQrcode, action: "navigate to homepage", element: 'Home', alt: currentUser_ != null ? "" : 'auth' },
         { icon: faAdd, action: "add accom modal", element: 'Create', alt: currentUser_ != null ? "create" : "auth" },
-        { icon: faPaperPlane, action: "popup filters", element: 'Requests', alt: "" },
-        { icon: faCog, action: "settings", element: 'Settings', alt: "" },
+        { icon: faPaperPlane, action: "popup filters", element: 'Requests', alt: currentUser_ != null ? "" : 'auth' },
+        { icon: faCog, action: "settings", element: 'Settings', alt: currentUser_ != null ? "" : 'auth' },
         {
           icon: currentUser_ != null ? faPowerOff : faUser,
           action: "authentication",
