@@ -1,4 +1,3 @@
-import axios from "axios";
 import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -9,6 +8,7 @@ import {
 } from "firebase/auth";
 import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getAnalytics } from "firebase/analytics";
 import { useEffect, useState } from "react";
 
 const firebaseConfig = {
@@ -22,11 +22,12 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const store = getStorage(app);
 
-export { db, store, auth };
+export { db, store, auth, analytics };
 
 export const getLocations = async () => {
  
