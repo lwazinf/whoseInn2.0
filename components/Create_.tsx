@@ -198,6 +198,7 @@ const Create_ = ({}: Create_Props) => {
 
               await setDoc(doc(db, "suppliers", uuid_), {
                 uid: uuid_,
+                // @ts-ignore
                 owner: currentUser_?.uid,
                 timestamp: serverTimestamp(),
                 products: [],
@@ -206,10 +207,15 @@ const Create_ = ({}: Create_Props) => {
                 category: category_,
                 contact: {
                   location: location_,
-                  email: 'email',
-                  phone: 'phone',
+                  email: "email",
+                  phone: "phone",
                 },
-                country: location_.address.split(',').map(item => item.trim()).pop(),
+                // @ts-ignore
+                country: location_.address
+                  .split(",")
+                  // @ts-ignore
+                  .map((item) => item.trim())
+                  .pop(),
                 // @ts-ignore
                 name: name_,
               }).then(() => {
@@ -295,21 +301,24 @@ const Create_ = ({}: Create_Props) => {
                       // @ts-ignore
                       setDescTemp_(e.target.value);
                       // @ts-ignore
-                      
-                        setDesc_(e.target.value);
+
+                      setDesc_(e.target.value);
+                      // @ts-ignore
                       e.target.value == "" && setDesc_(0);
                     } else if (obj.data == category) {
                       // @ts-ignore
                       setCategoryTemp_(e.target.value);
                       // @ts-ignore
-                      
-                        setCategory_(e.target.value);
+
+                      setCategory_(e.target.value);
+                      // @ts-ignore
                       e.target.value == "" && setCategory_(0);
                     } else {
                       // @ts-ignore
                       setNameTemp_(e.target.value);
                       // @ts-ignore
                       setName_(e.target.value);
+                      // @ts-ignore
                       e.target.value == "" && setName_(0);
                     }
                   }}
@@ -456,8 +465,10 @@ const Create_ = ({}: Create_Props) => {
           onClick={() => {
             setDesc_("");
             setImage_([]);
+            // @ts-ignore
             setName_(0);
             setServices_([]);
+            // @ts-ignore
             setDesc_(0);
             setLocation_([]);
             setDescTemp_("");
