@@ -9,12 +9,12 @@ import {
 import { Loader } from "@googlemaps/js-api-loader";
 import {
   ThisState,
-  AccrState,
+  DescState,
   ImageState,
   LocationState,
   ServicesState,
-  PriceState,
-  StudentsState,
+  NameState,
+  CategoryState,
   NotifState,
 } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -54,31 +54,31 @@ import Router from "next/router";
 interface Create_Props {}
 
 const Create_ = ({}: Create_Props) => {
-  const acc = "Your current level of accreditation..";
-  const images = "Choose a cover image for your accommodation..";
-  const price = "Your price per room..";
-  const map = "Let's find your location..";
-  const students = "How many rooms are available??";
+  const name = "What is your entity's name?";
+  const desc = "Give us a brief description of your entity..";
+  const category = "Which category does your entity fall under?";
+  const images = "Upload your company logo..";
+  const map = "Where does your entity operate from?";
   const services = "Which services do you provide?";
 
-  const [accr_, setAccr_] = useRecoilState(AccrState);
+  const [category_, setCategory_] = useRecoilState(CategoryState);
   const [image_, setImage_] = useRecoilState(ImageState);
   const [location_, setLocation_] = useRecoilState(LocationState);
   const [services_, setServices_] = useRecoilState(ServicesState);
-  const [price_, setPrice_] = useRecoilState(PriceState);
-  const [students_, setStudents_] = useRecoilState(StudentsState);
+  const [name_, setName_] = useRecoilState(NameState);
+  const [desc_, setDesc_] = useRecoilState(DescState);
 
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [notif_, setNotif_] = useRecoilState(NotifState);
   const [option_, setOption_] = useState(0);
-  const [tempStudents_, setStudentsTemp_] = useState("");
-  const [tempPrice_, setPriceTemp_] = useState("");
+  const [tempDesc_, setDescTemp_] = useState("");
+  const [tempName_, setNameTemp_] = useState("");
 
   const currentUser_ = useAuth();
 
   const mockData_ = [
     {
-      data: price,
+      data: name,
       optionType: "input",
       options: [0],
       name: "Price",
@@ -86,7 +86,7 @@ const Create_ = ({}: Create_Props) => {
       icon: faCoins,
     },
     {
-      data: students,
+      data: desc,
       optionType: "input",
       options: [0],
       name: "Students",
@@ -102,9 +102,9 @@ const Create_ = ({}: Create_Props) => {
       icon: faMapMarkerAlt,
     },
     {
-      data: acc,
+      data: category,
       optionType: "select",
-      options: ["N/A", "Prov.", "Full"],
+      options: ["Equipment", "Packaging", "Material"],
       name: "Acc",
       hoverData: "Accreditation",
       icon: faCheckCircle,
@@ -155,29 +155,6 @@ const Create_ = ({}: Create_Props) => {
     }, 2500);
   };
 
-  const getDist = async (origin: any) => {
-    const destination = [-29.107512917392913, 26.19251497092256];
-    let distance;
-    const matrix_ = new google.maps.DistanceMatrixService();
-    await matrix_.getDistanceMatrix(
-      {
-        origins: [new google.maps.LatLng(origin[0], origin[1])],
-        destinations: [new google.maps.LatLng(destination[0], destination[1])],
-        travelMode: google.maps.TravelMode.WALKING,
-      },
-      (response, status) => {
-        if (status === "OK") {
-          // @ts-ignore
-          distance = parseFloat(response?.rows[0].elements[0].distance.text.split(' ')[0]);
-        } else {
-          console.log(`Error: ${status}`);
-        }
-      }
-    );
-    return distance;
-  };
-
-
   const storeImage = async (image: any) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
@@ -185,7 +162,7 @@ const Create_ = ({}: Create_Props) => {
 
       const storageRef = ref(
         storage,
-        `locations/${location_.address}/` + fileName
+        `suppliers/${location_.address}/` + fileName
       );
 
       const uploadTask = uploadBytesResumable(storageRef, image);
@@ -219,21 +196,26 @@ const Create_ = ({}: Create_Props) => {
               // setImages(images.push(downloadURL));
               const uuid_ = v4();
 
-              await setDoc(doc(db, "locations", uuid_), {
+              await setDoc(doc(db, "suppliers", uuid_), {
                 uid: uuid_,
-                // @ts-ignore
                 owner: currentUser_?.uid,
                 timestamp: serverTimestamp(),
-                accr: accr_,
-                location: location_,
-                price: price_,
-                students: students_,
-                services: services_,
+                products: [],
                 image: downloadURL,
+                desc: desc_,
+                category: category_,
+                contact: {
+                  location: location_,
+                  email: 'email',
+                  phone: 'phone',
+                },
+                country: location_.address.split(',').map(item => item.trim()).pop(),
+                // @ts-ignore
+                name: name_,
               }).then(() => {
                 setShowThis_("");
                 runNotif_(`${location_.address} Link created..`);
-                Router.reload()
+                Router.reload();
               });
             }
           );
@@ -253,10 +235,12 @@ const Create_ = ({}: Create_Props) => {
       <div
         className={`w-[300px] md:w-[750px] h-[450px] bg-white backdrop-blur-md rounded-lg shadow-sm relative overflow-hidden`}
       >
-        <div className={`w-[300px] h-[450px] absolute top-0 md:opacity-100 opacity-0 pointer-events-none`}>
+        <div
+          className={`w-[300px] h-[450px] absolute top-0 md:opacity-100 opacity-0 pointer-events-none`}
+        >
           <img
             className={`h-full w-full object-cover md:opacity-100 opacity-0 pointer-events-none`}
-            src={`https://images.pexels.com/photos/14613134/pexels-photo-14613134.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
+            src={`https://images.pexels.com/photos/906494/pexels-photo-906494.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`}
           />
         </div>
         <div
@@ -304,27 +288,29 @@ const Create_ = ({}: Create_Props) => {
                 <input
                   type={"text"}
                   placeholder={`Your answer here..`}
-                  value={obj.data == students ? tempStudents_ : tempPrice_}
+                  value={obj.data == desc ? tempDesc_ : tempName_}
                   className={`w-full h-[35px] bg-black/10 rounded-[2px] shadow-sm pl-2`}
                   onChange={(e) => {
-                    if (obj.data == students) {
+                    if (obj.data == desc) {
                       // @ts-ignore
-                      isNaN(e.target.value)
-                        ? setStudentsTemp_("")
-                        : setStudentsTemp_(e.target.value);
+                      setDescTemp_(e.target.value);
                       // @ts-ignore
-                      !(isNaN(e.target.value) || e.target.value == "") &&
-                        setStudents_(parseInt(e.target.value));
-                      e.target.value == "" && setStudents_(0);
+                      
+                        setDesc_(e.target.value);
+                      e.target.value == "" && setDesc_(0);
+                    } else if (obj.data == category) {
+                      // @ts-ignore
+                      setCategoryTemp_(e.target.value);
+                      // @ts-ignore
+                      
+                        setCategory_(e.target.value);
+                      e.target.value == "" && setCategory_(0);
                     } else {
                       // @ts-ignore
-                      isNaN(e.target.value)
-                        ? setPriceTemp_("")
-                        : setPriceTemp_(e.target.value);
+                      setNameTemp_(e.target.value);
                       // @ts-ignore
-                      !(isNaN(e.target.value) || e.target.value == "") &&
-                        setPrice_(parseInt(e.target.value));
-                      e.target.value == "" && setPrice_(0);
+                      setName_(e.target.value);
+                      e.target.value == "" && setName_(0);
                     }
                   }}
                 />
@@ -336,10 +322,10 @@ const Create_ = ({}: Create_Props) => {
                     return (
                       <div
                         className={`w-[100px] h-[30px] ${
-                          accr_ == obj_ ? "bg-black/70" : "bg-black/40"
+                          desc_ == obj_ ? "bg-black/70" : "bg-black/40"
                         } hover:bg-black/50 transition-all duration-200 rounded-[4px] shadow-sm cursor-pointer flex flex-row justify-center items-center mx-1 text-white text-[15px] font-black`}
                         onClick={() => {
-                          setAccr_(obj_.toString());
+                          setCategory_(obj_.toString());
                         }}
                         key={obj_}
                       >
@@ -426,11 +412,11 @@ const Create_ = ({}: Create_Props) => {
                     setValue(address_);
                     const results = await getGeocode({ address: address_ });
                     const { lat, lng } = await getLatLng(results[0]);
-                    
-                    getDist([lat, lng]).then((distance_) => {
-                      console.log(distance_)
-                      setLocation_({ address: address_, lat: lat, lng: lng, distance: distance_ })
-                    })
+                    setLocation_({
+                      address: address_,
+                      lat: lat,
+                      lng: lng,
+                    });
                   }}
                 >
                   <ComboboxInput
@@ -468,14 +454,14 @@ const Create_ = ({}: Create_Props) => {
         <div
           className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 absolute top-0 right-0 m-4`}
           onClick={() => {
-            setAccr_("");
+            setDesc_("");
             setImage_([]);
-            setPrice_(0);
+            setName_(0);
             setServices_([]);
-            setStudents_(0);
+            setDesc_(0);
             setLocation_([]);
-            setStudentsTemp_("");
-            setPriceTemp_("");
+            setDescTemp_("");
+            setNameTemp_("");
 
             setShowThis_("");
             setOption_(0);

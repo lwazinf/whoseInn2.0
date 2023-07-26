@@ -11,20 +11,29 @@ import {
 import { useEffect, useState } from "react";
 import { auth, db, getLocations } from "../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faEdit, faEye, faPencil, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faEdit,
+  faEye,
+  faPencil,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { deleteDoc, doc } from "firebase/firestore";
+import Router from "next/router";
 
 const Home: NextPage = () => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [cache_, setCache_] = useRecoilState(CacheState);
   const [focus_, setFocus_] = useRecoilState(FocusState);
   const [delete_, setDelete_] = useRecoilState(DeleteState);
-  const [mouseStatus_, setMouseStatus_] = useState('')
-  
+  const [mouseStatus_, setMouseStatus_] = useState("");
+
   const deleteThis_ = async (id_: any) => {
-    await deleteDoc(doc(db, "locations", id_));
+    await deleteDoc(doc(db, "suppliers", id_));
+    Router.reload();
   };
-  
+
   useEffect(() => {
     const y_ = async () => {
       const x_ = await getLocations();
@@ -44,8 +53,10 @@ const Home: NextPage = () => {
           {cache_?.map((obj) => {
             return (
               <div
-              // @ts-ignore
-                className={`w-[350px] h-[200px] ${ obj.id == delete_ && mouseStatus_ == 'yes' ? 'bg-green-400/40': obj.id == delete_ && mouseStatus_ == 'no' ? 'bg-red-400/40' : 'bg-white'} rounded-lg backdrop-blur-ls shadow-sm overflow-hidden relative opacity-80 hover:opacity-100 transition-all duration-800 p-1`}
+                // @ts-ignore
+                className={`w-[350px] h-[200px] 
+                
+                 rounded-lg backdrop-blur-ls shadow-sm overflow-hidden relative opacity-80 hover:opacity-100 transition-all duration-800 p-1`}
                 onClick={() => {
                   // setShowThis_("accom");
                   // setFocus_(obj);
@@ -59,32 +70,35 @@ const Home: NextPage = () => {
                   // @ts-ignore
                   src={obj?.image}
                 />
-                <div className={`min-w-2 min-h-2 px-1 pt-1 rounded-[7px] bg-white/60 backdrop-blur-lg absolute bottom-0 right-0 m-3 ${
-              // @ts-ignore
-                  delete_ == obj.id ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
-                }`}>
+                <div
+                  className={`min-w-2 min-h-2 px-1 pt-1 rounded-[7px] bg-white/60 backdrop-blur-lg absolute bottom-0 right-0 m-3 ${
+                    // @ts-ignore
+                    delete_ == obj.id
+                      ? "opacity-0 pointer-events-none"
+                      : "opacity-100 pointer-events-auto"
+                  }`}
+                >
                   <FontAwesomeIcon
-                        icon={faEye}
-                        className={`w-[15px] h-[15px] text-black/70   cursor-pointer my-1 hover:text-black transition-all duration-200`}
-                        onClick={() => {
-                          setShowThis_("accom");
-                  setFocus_(obj);
-                        }}
-                      />
-                <FontAwesomeIcon
-                        icon={faTrash}
-                        className={`w-[15px] h-[15px] text-black/70  cursor-pointer my-2 hover:text-black transition-all duration-200`}
-                        onClick={() => {
-              // @ts-ignore
-                          setDelete_(obj?.id)
-                        }}
-                      />
-                      
-                      </div>
+                    icon={faEye}
+                    className={`w-[15px] h-[15px] text-black/70   cursor-pointer my-1 hover:text-black transition-all duration-200`}
+                    onClick={() => {
+                      setShowThis_("accom");
+                      setFocus_(obj);
+                    }}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className={`w-[15px] h-[15px] text-black/70  cursor-pointer my-2 hover:text-black transition-all duration-200`}
+                    onClick={() => {
+                      // @ts-ignore
+                      setDelete_(obj?.id);
+                    }}
+                  />
+                </div>
                 <div
                   // @ts-ignore
                   className={`w-full h-full absolute top-0 justify-center items-center flex flex-row pt-[50px]  transition-all duration-200 ${
-                        // @ts-ignore
+                    // @ts-ignore
                     delete_ == obj?.id
                       ? "opacity-100 pointer-events-auto"
                       : "opacity-0 pointer-events-none"
@@ -99,7 +113,7 @@ const Home: NextPage = () => {
                 <div
                   // @ts-ignore
                   className={`w-full h-full absolute top-0 left-0 flex flex-row justify-center items-center pt-[150px] pb-[25px] pl-[122px] pr-[114px] transition-all duration-200 ${
-                        // @ts-ignore
+                    // @ts-ignore
                     delete_ == obj?.id
                       ? "opacity-100 pointer-events-auto"
                       : "opacity-0 pointer-events-none"
@@ -114,10 +128,10 @@ const Home: NextPage = () => {
                         setDelete_("");
                       }}
                       onMouseEnter={() => {
-                        setMouseStatus_('no')
+                        setMouseStatus_("no");
                       }}
                       onMouseLeave={() => {
-                        setMouseStatus_('')
+                        setMouseStatus_("");
                       }}
                     >
                       <FontAwesomeIcon
@@ -135,10 +149,10 @@ const Home: NextPage = () => {
                         deleteThis_(obj?.id);
                       }}
                       onMouseEnter={() => {
-                        setMouseStatus_('yes')
+                        setMouseStatus_("yes");
                       }}
                       onMouseLeave={() => {
-                        setMouseStatus_('')
+                        setMouseStatus_("");
                       }}
                     >
                       <FontAwesomeIcon

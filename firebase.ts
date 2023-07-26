@@ -34,7 +34,7 @@ export { db, store, auth, analytics };
 
 export const getLocations = async () => {
  
-  const colRef = collection(db, "locations");
+  const colRef = collection(db, "suppliers");
   // const query_ = await query(colRef, where('owner', '==', 'RUvdWw22QmYVqBF9VYxKmKtJPtI2'))
   const data = await getDocs(colRef)
   return data.docs.map((doc_) => ({

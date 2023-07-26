@@ -10,14 +10,14 @@ export const ThisState = atom({
     default: [],
   })
 
-  export const PriceState = atom({
-    key: 'PriceState',
-    default: 0,
+  export const NameState = atom({
+    key: 'NameState',
+    default: '',
   })
 
-  export const StudentsState = atom({
-    key: 'StudentsState',
-    default: 0,
+  export const CategoryState = atom({
+    key: 'CategoryState',
+    default: '',
   })
 
   export const LocationState = atom<any>({
@@ -30,8 +30,8 @@ export const ThisState = atom({
     default: [],
   })
 
-  export const AccrState = atom({
-    key: 'AccrState',
+  export const DescState = atom({
+    key: 'DescState',
     default: '',
   })
 
