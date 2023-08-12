@@ -50,8 +50,18 @@ export const ThisState = atom({
     default: {},
   })
 
+  export const FocusImageState = atom({
+    key: 'FocusState',
+    default: '',
+  })
+
   export const MapState = atom({
     key: 'MapState',
+    default: false,
+  })
+
+  export const OpenState = atom({
+    key: 'OpenState',
     default: false,
   })
 

@@ -13,6 +13,8 @@ import { getLocations } from "../firebase";
 import { useRecoilState } from "recoil";
 import { CacheState } from "../components/atoms/atoms";
 import NavNotif_ from "../components/NavNotif_";
+import Catalogue from "../components/Catalogue_";
+import Catalogue_ from "../components/Catalogue_";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -24,12 +26,14 @@ function MyApp({ Component, pageProps }: AppProps) {
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <Component {...pageProps} />
+          <Catalogue_/>
           <Accoms_ />
           <Create_ />
           <Auth_ />
           <NavNotif_ />
+          
           <div
-            className={`w-[92px] min-h-screen fixed top-0 left-0 flex flex-col justify-center items-center transition-all duration-200`}
+            className={`md:w-[92px] w-full md:min-h-screen min-h-2 px-4 fixed md:top-0 md:left-0 md:bottom-auto bottom-0 flex flex-col justify-center items-center transition-all duration-200`}
           >
             <Nav_ />
           </div>

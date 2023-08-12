@@ -20,9 +20,9 @@ const Map_ = ({}: Map_Props) => {
           zoom={16}
           center={{
             // @ts-ignore 
-            lat: Object.keys(focus_).length == 0 ? 0 : focus_.location.lat,
+            lat: Object.keys(focus_).length == 0 ? 0 : focus_.contact?.location.lat,
             // @ts-ignore 
-            lng: Object.keys(focus_).length == 0 ? 0 : focus_.location.lng,
+            lng: Object.keys(focus_).length == 0 ? 0 : focus_.contact?.location.lng,
           }}
           mapContainerClassName={`w-full h-full opacity-80 transition-all duration-200`}
           options={{ disableDefaultUI: true }}
@@ -30,9 +30,9 @@ const Map_ = ({}: Map_Props) => {
           <Marker
             position={{
             // @ts-ignore 
-              lat: Object.keys(focus_).length == 0 ? 0 : focus_.location.lat,
+              lat: Object.keys(focus_).length == 0 ? 0 : focus_.contact?.location.lat,
             // @ts-ignore 
-            lng: Object.keys(focus_).length == 0 ? 0 : focus_.location.lng,
+            lng: Object.keys(focus_).length == 0 ? 0 : focus_.contact?.location.lng,
             }}
           />
         </GoogleMap>

@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { FocusState, MapState, ThisState } from "./atoms/atoms";
+import { FocusState, FocusImageState, MapState, ThisState } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -19,6 +19,7 @@ interface Accom_Props {}
 const Accom_ = ({}: Accom_Props) => {
   const [showThis_, setShowThis_] = useRecoilState(ThisState);
   const [focus_, setFocus_] = useRecoilState(FocusState);
+  const [focusImage_, setFocusImage_] = useRecoilState(FocusImageState);
   const [map_, setMap_] = useRecoilState(MapState);
   return (
     <div
@@ -35,7 +36,7 @@ const Accom_ = ({}: Accom_Props) => {
           <img
             className={`h-full w-full object-cover`}
             //  @ts-ignore 
-            src={`${focus_.image}`}
+            src={`${focusImage_.image}`}
           />
         </div>
 
@@ -67,7 +68,7 @@ const Accom_ = ({}: Accom_Props) => {
             );
           })}
         </div>
-        <div
+        {/* <div
           className={`min-h-[20px] min-w-[20px] flex flex-row justify-center items-center cursor-pointer text-black/40 hover:text-black/60 transition-all duration-200 absolute top-0 right-0 m-4`}
           onClick={() => {
             setMap_(false);
@@ -75,7 +76,7 @@ const Accom_ = ({}: Accom_Props) => {
           }}
         >
           <FontAwesomeIcon icon={faTimes} className={`w-[20px] h-[20px]`} />
-        </div>
+        </div> */}
         <div
           className={`w-[200px] h-[100px] rounded-[4px] bg-white/80 backdrop-blur-lg flex flex-col justify-center items-center absolute right-[60px] bottom-5 transition-all hover:duration-200 duration-[1500ms]`}
         >
@@ -84,27 +85,25 @@ const Accom_ = ({}: Accom_Props) => {
               <div className={`text-[15px] font-thin text-black/70 flex flex-row text-center p-2`}>
             <p className={`text-[13px] font-medium text-black/50`}>
               {/* @ts-ignore */}
-              {`${focus_.location.address}`}
+              {`${focus_.contact?.location.address}`}
             </p>
           </div>
             ) : (
-              <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
-            Rent:{" "}
+              <div className={`text-[15px] font-thin text-black/70 flex flex-row text-center p-2`}>
             <p className={`text-[15px] font-medium text-black/50`}>
               {/* @ts-ignore */}
-              {`R${focus_.price}`}
+              {`${focusImage_.name}`}
             </p>
           </div>
             )
           }
           {
-            !map_ ? <div className={`text-[15px] font-thin text-black/70 flex flex-row`}>
-            Students:{" "}
-            <p className={`text-[15px] font-medium text-black/50`}>
+            !map_ ? <div className={`text-[13px] font-normal text-center text-black/70 mt-[0px] flex flex-row`}>
+            <p className={`mt-[0px]`}>
               {/* @ts-ignore */}
-              {`${focus_.students}`}
+              {focusImage_.desc}
             </p>
-          </div> : <p className={`text-[13px] font-normal text-black/70 mt-[0px]`}>xxx-xxx-xxxx</p>
+          </div> : <p className={`mt-[0px]`}>xxx-xxx-xxxx</p>
           }
           {
             !map_ && <div
