@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { FocusState, FocusImageState, OpenState, ThisState } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 interface Catalogue_Props {}
 
@@ -36,6 +36,12 @@ const Catalogue_ = ({}: Catalogue_Props) => {
             </div>
           );
         })}
+        <div className={`w-full h-full bg-transparent flex flex-row justify-center items-center`}>
+        <FontAwesomeIcon
+                icon={faPlus}
+                className={`w-[25px] h-[25px] hover:w-[22px] hover:h-[22px] m-1 hover:text-black/80 text-black/50 hover:cursor-pointer transition-all duration-200`}
+              />
+        </div>
       </div>
     </div>
   );
